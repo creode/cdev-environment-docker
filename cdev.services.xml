@@ -7,36 +7,36 @@
 
         <!-- Command classes -->
 
-        <service id="cdev.docker_setup" class="Creode\Environment\Docker\Command\SetupEnvCommand">
+        <service id="cdev.docker_setup" class="Cdev\Docker\Environment\Command\SetupEnvCommand">
             <argument type="service" id="environment.type.docker" />
             <argument type="service" id="cdev.system_composer" />
             <argument type="service" id="symfony.filesystem" />
         </service>
 
-        <service id="cdev.docker_container_mysql" class="Creode\Environment\Docker\Command\Container\Mysql">
+        <service id="cdev.docker_container_mysql" class="Cdev\Docker\Environment\Command\Container\Mysql">
             <argument type="service" id="symfony.filesystem" />
         </service>
 
         <service id="cdev.docker_container_php"
-            class="Creode\Environment\Docker\Command\Container\Php">
+            class="Cdev\Docker\Environment\Command\Container\Php">
         </service>
 
         <service id="cdev.docker_container_mailcatcher"
-            class="Creode\Environment\Docker\Command\Container\Mailcatcher">
+            class="Cdev\Docker\Environment\Command\Container\Mailcatcher">
         </service>
 
         <service id="cdev.docker_container_redis"
-            class="Creode\Environment\Docker\Command\Container\Redis">
+            class="Cdev\Docker\Environment\Command\Container\Redis">
         </service>
 
         <service id="cdev.docker_container_drush"
-            class="Creode\Environment\Docker\Command\Container\Drush">
+            class="Cdev\Docker\Environment\Command\Container\Drush">
         </service>
 
 
         <!-- Environments -->
 
-        <service id="environment.type.docker" class="Creode\Environment\Docker\Docker">
+        <service id="environment.type.docker" class="Cdev\Docker\Environment\Docker">
             <argument type="service" id="cdev.system_docker" />
             <argument type="service" id="cdev.system_docker_compose" />
             <argument type="service" id="cdev.system_docker_sync" />
@@ -48,15 +48,15 @@
         <!-- System commands -->
 
         <service id="cdev.system_docker"
-            class="Creode\Environment\Docker\System\Docker">
+            class="Cdev\Docker\Environment\System\Docker">
         </service>
 
         <service id="cdev.system_docker_compose"
-            class="Creode\Environment\Docker\System\Compose\Compose">
+            class="Cdev\Docker\Environment\System\Compose\Compose">
         </service>
 
         <service id="cdev.system_docker_sync"
-            class="Creode\Environment\Docker\System\Sync\Sync">
+            class="Cdev\Docker\Environment\System\Sync\Sync">
         </service>
         
     </services>
