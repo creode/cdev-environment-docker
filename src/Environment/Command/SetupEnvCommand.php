@@ -114,8 +114,8 @@ class SetupEnvCommand extends ConfigurationCommand
                 'mysql'
             ],
             'frameworks' => [
-                \Creode\Framework\Drupal8\Drupal8::NAME,
-                \Creode\Framework\Drupal7\Drupal7::NAME
+                'Drupal8',
+                'Drupal7'
             ]
         ]   
     ];
