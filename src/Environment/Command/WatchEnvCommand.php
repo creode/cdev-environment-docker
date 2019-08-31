@@ -1,5 +1,5 @@
 <?php
-namespace Creode\Cdev\Command\Env;
+namespace Cdev\Docker\Environment\Command;
 
 use Creode\Cdev\Command\Env\EnvCommand;
 use Symfony\Component\Console\Input\InputArgument;
