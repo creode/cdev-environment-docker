@@ -63,9 +63,11 @@ class Php extends Container
         // usage example will be Drupal sites where clearing cache doesn't do all sites
         $this->buildOrImage(
             '../vendor/creode/docker/images/php/7.0',
-            'creode/php-apache:7.0',
+            'creode/php-apache:7.2',
             $this->_config,
             [   // builds
+                '../vendor/creode/docker/images/php/7.0' => 'PHP 7.2',
+                '../vendor/creode/docker/images/php/7.0' => 'PHP 7.1',
                 '../vendor/creode/docker/images/php/7.0' => 'PHP 7.0',
                 '../vendor/creode/docker/images/php/5.6' => 'PHP 5.6',
                 '../vendor/creode/docker/images/php/5.6-ioncube' => 'PHP 5.6 with ionCube',
@@ -87,6 +89,17 @@ class Php extends Container
 
         $this->_config['environment']['VIRTUAL_HOST'] = '.' . $dockername . '.docker';
 
+        $editEnvironmentVariables = false;
+
+        $this->askYesNoQuestion(
+            'Edit environment variables',
+            $editEnvironmentVariables
+        );
+
+        if ($editEnvironmentVariables) {
+            $this->_editEnvironmentVariables();
+        }
+
         $this->_config['links'] = []; 
 
         if ($volumeName) {
@@ -94,6 +107,75 @@ class Php extends Container
         } else {
             $this->_config['volumes'] = ['../' . $src . ':/var/www/html'];
         }
-        
+    }
+
+    private function _editEnvironmentVariables()
+    {
+        if (isset($this->_config['environment']) && count($this->_config['environment']) > 1) {
+            $this->_removeEnvironmentVariables();
+        }
+
+        $this->_addEnvironmentVariables();
+    }
+
+    private function _removeEnvironmentVariables()
+    {
+        $removeEnvironmentVariables = false;
+
+        $this->askYesNoQuestion(
+            'Remove environment variables',
+            $removeEnvironmentVariables
+        );
+
+        if (!$removeEnvironmentVariables) {
+            return;
+        }
+
+        foreach($this->_config['environment'] as $varName => $value) {
+            // don't let them remove the virtual host name
+            if ($varName == 'VIRTUAL_HOST') {
+                continue;
+            }
+
+            $removeEnvVar = false;
+
+            $this->askYesNoQuestion(
+                'Remove ' . $varName,
+                $removeEnvVar
+            );
+
+            if ($removeEnvVar) {
+                unset($this->_config['environment'][$varName]);
+            }
+        }
+    }
+
+    private function _addEnvironmentVariables()
+    {
+        $addNewEnvironmentVariable = false;
+
+        $this->askYesNoQuestion(
+            'Add new environment variable',
+            $addNewEnvironmentVariable
+        );
+
+        if (!$addNewEnvironmentVariable) {
+            return;
+        }
+
+        $this->askQuestion(
+            'Environment Variable Name',
+            $varName
+        );
+
+        $this->askQuestion(
+            'Environment Variable Value',
+            $value
+        );
+
+        $this->_config['environment'][$varName] = $value;
+
+        // offer to add another
+        $this->_addEnvironmentVariables();
     }
 }
