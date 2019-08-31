@@ -50,14 +50,15 @@ class Mysql extends Container
 
         $this->buildOrImage(
             '../vendor/creode/docker/images/mysql',
-            'creode/mysql:5.7',
+            'creode/mysql:8.0',
             $this->_config,
             [   // builds
                 '../vendor/creode/docker/images/mysql' => 'MySQL'
             ],
             [   // images
                 'creode/mysql:5.6' => 'MySQL 5.6',
-                'creode/mysql:5.7' => 'MySQL 5.7'
+                'creode/mysql:5.7' => 'MySQL 5.7',
+                'creode/mysql:8.0' => 'MySQL 8.0'
             ]
         );
 
