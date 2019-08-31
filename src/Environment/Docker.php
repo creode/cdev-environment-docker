@@ -118,6 +118,15 @@ class Docker extends Environment
         $this->_compose->up($path, $build);
     }
 
+    public function watch()
+    {
+        $this->logTitle('Watching dev environment logs...');
+
+        $path = $this->_input->getOption('path');
+
+        $this->_compose->logs($path);
+    }
+
     public function stop()
     {
         $this->logTitle('Stopping dev environment...');

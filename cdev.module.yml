@@ -5,5 +5,6 @@ commands:
  - cdev.docker_container_redis
  - cdev.docker_container_drush
  - cdev.docker_setup
+ - cdev.docker_watch_command
 environments:
  - \Cdev\Docker\Environment\Docker
