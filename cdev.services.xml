@@ -29,10 +29,6 @@
             class="Cdev\Docker\Environment\Command\Container\Redis">
         </service>
 
-        <service id="cdev.docker_container_drush"
-            class="Cdev\Docker\Environment\Command\Container\Drush">
-        </service>
-
         <service id="cdev.docker_watch_command" class="Cdev\Docker\Environment\Command\WatchEnvCommand">
             <argument type="service" id="cdev.environment.type" />
         </service>

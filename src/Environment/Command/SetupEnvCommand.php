@@ -102,22 +102,7 @@ class SetupEnvCommand extends ConfigurationCommand
             'command' => Container\Redis::COMMAND_NAME,
             'config' => Container\Redis::CONFIG_DIR . '/' .
                 Container\Redis::CONFIG_FILE
-        ],
-        'Drush' => [
-            'defaultActive' => false,
-            'node' => 'drush',
-            'command' => Container\Drush::COMMAND_NAME,
-            'config' => Container\Drush::CONFIG_DIR . '/' .
-                Container\Drush::CONFIG_FILE,
-            'depends' => [
-                'php',
-                'mysql'
-            ],
-            'frameworks' => [
-                'Drupal8',
-                'Drupal7'
-            ]
-        ]   
+        ]  
     ];
 
     /**
