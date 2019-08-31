@@ -12,6 +12,7 @@ class Docker extends Command
         $this->run(self::COMMAND, ['container', 'prune', '--force'], $path);
         $this->run(self::COMMAND, ['image', 'prune', '--force'], $path);
         $this->run(self::COMMAND, ['volume', 'prune', '--force'], $path);
+        $this->run(self::COMMAND, ['network', 'prune', '--force'], $path);
 
         return 'Clean up complete.';
     }
