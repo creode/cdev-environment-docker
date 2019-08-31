@@ -89,6 +89,17 @@ class Php extends Container
 
         $this->_config['environment']['VIRTUAL_HOST'] = '.' . $dockername . '.docker';
 
+        $editEnvironmentVariables = false;
+
+        $this->askYesNoQuestion(
+            'Edit environment variables',
+            $editEnvironmentVariables
+        );
+
+        if ($editEnvironmentVariables) {
+            $this->_editEnvironmentVariables();
+        }
+
         $this->_config['links'] = []; 
 
         if ($volumeName) {
@@ -96,6 +107,75 @@ class Php extends Container
         } else {
             $this->_config['volumes'] = ['../' . $src . ':/var/www/html'];
         }
-        
+    }
+
+    private function _editEnvironmentVariables()
+    {
+        if (isset($this->_config['environment']) && count($this->_config['environment']) > 1) {
+            $this->_removeEnvironmentVariables();
+        }
+
+        $this->_addEnvironmentVariables();
+    }
+
+    private function _removeEnvironmentVariables()
+    {
+        $removeEnvironmentVariables = false;
+
+        $this->askYesNoQuestion(
+            'Remove environment variables',
+            $removeEnvironmentVariables
+        );
+
+        if (!$removeEnvironmentVariables) {
+            return;
+        }
+
+        foreach($this->_config['environment'] as $varName => $value) {
+            // don't let them remove the virtual host name
+            if ($varName == 'VIRTUAL_HOST') {
+                continue;
+            }
+
+            $removeEnvVar = false;
+
+            $this->askYesNoQuestion(
+                'Remove ' . $varName,
+                $removeEnvVar
+            );
+
+            if ($removeEnvVar) {
+                unset($this->_config['environment'][$varName]);
+            }
+        }
+    }
+
+    private function _addEnvironmentVariables()
+    {
+        $addNewEnvironmentVariable = false;
+
+        $this->askYesNoQuestion(
+            'Add new environment variable',
+            $addNewEnvironmentVariable
+        );
+
+        if (!$addNewEnvironmentVariable) {
+            return;
+        }
+
+        $this->askQuestion(
+            'Environment Variable Name',
+            $varName
+        );
+
+        $this->askQuestion(
+            'Environment Variable Value',
+            $value
+        );
+
+        $this->_config['environment'][$varName] = $value;
+
+        // offer to add another
+        $this->_addEnvironmentVariables();
     }
 }
