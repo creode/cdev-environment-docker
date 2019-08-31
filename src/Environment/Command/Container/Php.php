@@ -63,9 +63,11 @@ class Php extends Container
         // usage example will be Drupal sites where clearing cache doesn't do all sites
         $this->buildOrImage(
             '../vendor/creode/docker/images/php/7.0',
-            'creode/php-apache:7.0',
+            'creode/php-apache:7.2',
             $this->_config,
             [   // builds
+                '../vendor/creode/docker/images/php/7.0' => 'PHP 7.2',
+                '../vendor/creode/docker/images/php/7.0' => 'PHP 7.1',
                 '../vendor/creode/docker/images/php/7.0' => 'PHP 7.0',
                 '../vendor/creode/docker/images/php/5.6' => 'PHP 5.6',
                 '../vendor/creode/docker/images/php/5.6-ioncube' => 'PHP 5.6 with ionCube',
