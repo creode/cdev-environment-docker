@@ -56,9 +56,35 @@ class Compose extends Command
             array_push($params, '--build');
         }
 
-        $this->runExternalCommand(self::COMMAND, $params, $path);
+        $this->run(self::COMMAND, $params, $path);
 
         return self::COMMAND . ' up completed';
+    }
+
+    /**
+     * Watchs the logs for the environment
+     * @param string $path
+     * @return string
+     */
+    public function logs($path)
+    {
+        $this->requiresConfig();
+
+        $this->run(
+            self::COMMAND,
+            [
+                '-f',
+                Config::CONFIG_DIR . self::FILE,
+                '-p',
+                $this->_networkName,
+                'logs',
+                '-f', // --follow
+                '-t' // --timestamps
+            ],
+            $path
+        );
+
+        return self::COMMAND . ' logs running';
     }
 
     /**
