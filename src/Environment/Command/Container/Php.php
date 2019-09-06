@@ -12,7 +12,9 @@ class Php extends Container
     [
         'active' => true,
         'container_name' => 'project_php',
-        'relative_webroot_dir' => '',
+        'config-only' => [
+            'relative_webroot_dir' => ''
+        ],
         'ports' => [
             '80:80'
         ],
@@ -52,6 +54,13 @@ class Php extends Container
         ]
     ];
 
+    public function __construct(Filesystem $fs)
+    {
+        $this->_fs = $fs;
+
+        parent::__construct();
+    }
+
     protected function askQuestions()
     {
         $path = $this->_input->getOption('path');
@@ -90,9 +99,14 @@ class Php extends Container
 
         $this->_config['environment']['VIRTUAL_HOST'] = '.' . $dockername . '.docker';
 
+        if ($volumeName) {
+            $this->_config['volumes'] = [$volumeName . ':/var/www/html:nocopy'];
+        } else {
+            $this->_config['volumes'] = ['../' . $src . ':/var/www/html'];
+        }
 
-        $useCustomWebroot = isset($this->_config['relative_webroot_dir'])
-                        && strlen($this->_config['relative_webroot_dir']) > 0
+        $useCustomWebroot = isset($this->_config['config-only']['relative_webroot_dir'])
+                        && strlen($this->_config['config-only']['relative_webroot_dir']) > 0
                         ? true
                         : false;
 
@@ -104,7 +118,7 @@ class Php extends Container
         if ($useCustomWebroot) {
             $this->_editCustomWebroot();
         } else {
-            $this->_config['relative_webroot_dir'] = '';
+            $this->_config['config-only']['relative_webroot_dir'] = '';
         }
 
         $editEnvironmentVariables = false;
@@ -119,12 +133,6 @@ class Php extends Container
         }
 
         $this->_config['links'] = []; 
-
-        if ($volumeName) {
-            $this->_config['volumes'] = [$volumeName . ':/var/www/html:nocopy'];
-        } else {
-            $this->_config['volumes'] = ['../' . $src . ':/var/www/html'];
-        }
     }
 
     private function _editEnvironmentVariables()
@@ -201,11 +209,56 @@ class Php extends Container
     {
         $this->askQuestion(
             'What is the webroot directory, relative to `src` directory (e.g. web)',
-            $this->_config['relative_webroot_dir'],
+            $this->_config['config-only']['relative_webroot_dir'],
             ''
         );
+
+        $apacheConfigDirPath = '../config/apache';
+        $absoluteApacheConfigDirPath = $path . '/' . $apacheConfigDirPath
+
+        // generate apache config file
+        if (!$this->_fs->exists($absoluteApacheConfigDirPath)) {
+            $this->_fs->mkdir($absoluteApacheConfigDirPath, 0740);
+        }
+
+        $this->_copyApacheTemplateFiles(
+            ['000-default.conf', 'default-ssl.conf'],
+            $absoluteApacheConfigDirPath,
+            ["[CUSTOM_WEBROOT]" => $this->_config['config-only']['relative_webroot_dir']]
+        );
+
+        // add volume to config
+        $this->_config['volumes'][] = [
+            $apacheConfigDirPath . ':/etc/apache2/sites-available'
+        ];
     }
 
-    
+    /**
+     * Copies apache templates to config dir, replaces config placeholders
+     * with the configured details
+     * @param array $filenames names of the files to copy
+     * @param type $targetDirPath the location to copy the files to
+     * @param array $stringReplacements the replacement text, using placeholder as the key
+     * @return void
+     */
+    private function _copyApacheTemplateFiles(
+        array $filenames,
+        $targetDirPath,
+        array $stringReplacements
+    ) {
+        foreach ($filenames as $filename) {
+            $targetFilename = $targetDirPath . '/' . $filename;
+
+            $this->_fs->copy(__DIR__ . '/php/templates/' . $filename, $targetFilename);
+
+            $fileContents = file_get_contents($targetFilename);
+
+            foreach($stringReplacements as $original => $replacement) {
+                $fileContents = str_replace($original, $replacement, $fileContents);
+            }
+
+            file_put_contents($targetFilename, $fileContents);
+        }
+    }
 
 }

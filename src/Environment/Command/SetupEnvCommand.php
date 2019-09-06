@@ -491,6 +491,9 @@ class SetupEnvCommand extends ConfigurationCommand
             $configFile = Config::CONFIG_DIR . $values['config'];
             $config = Yaml::parse(file_get_contents($configFile));
             unset($config['active']);
+            if (isset($config['config-only'])) {
+                unset($config['config-only']);
+            }
 
             $links = $this->getContainerLinks($values['node']);
             if ($links) {
@@ -506,7 +509,7 @@ class SetupEnvCommand extends ConfigurationCommand
         $configArray['services'] = $activeServices;
         
 
-        //check if volumes var is null. If is dont add to config file
+        // check if volumes var is null. If is dont add to config file
         $volumes = isset($this->_config['config']['docker']['compose']['volumes']) ? $this->_config['config']['docker']['compose']['volumes'] : null;
         if(!is_null($volumes)){
             $configArray['volumes'] = $volumes;
