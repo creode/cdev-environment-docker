@@ -209,13 +209,15 @@ class Php extends Container
 
     private function _editCustomWebroot()
     {
+        $path = $this->_input->getOption('path');
+
         $this->askQuestion(
             'What is the webroot directory, relative to `src` directory (e.g. web)',
             $this->_config['config-only']['relative_webroot_dir'],
             ''
         );
 
-        $apacheConfigDirPath = '../config/apache';
+        $apacheConfigDirPath = 'config/apache';
         $absoluteApacheConfigDirPath = $path . '/' . $apacheConfigDirPath;
 
         // generate apache config file
@@ -230,9 +232,7 @@ class Php extends Container
         );
 
         // add volume to config
-        $this->_config['volumes'][] = [
-            $apacheConfigDirPath . ':/etc/apache2/sites-available'
-        ];
+        $this->_config['volumes'][] = '../' . $apacheConfigDirPath . ':/etc/apache2/sites-available';
     }
 
     /**
