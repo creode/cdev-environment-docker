@@ -214,7 +214,7 @@ class Php extends Container
         );
 
         $apacheConfigDirPath = '../config/apache';
-        $absoluteApacheConfigDirPath = $path . '/' . $apacheConfigDirPath
+        $absoluteApacheConfigDirPath = $path . '/' . $apacheConfigDirPath;
 
         // generate apache config file
         if (!$this->_fs->exists($absoluteApacheConfigDirPath)) {
