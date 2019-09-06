@@ -17,8 +17,8 @@
             <argument type="service" id="symfony.filesystem" />
         </service>
 
-        <service id="cdev.docker_container_php"
-            class="Cdev\Docker\Environment\Command\Container\Php">
+        <service id="cdev.docker_container_php" class="Cdev\Docker\Environment\Command\Container\Php">
+            <argument type="service" id="symfony.filesystem" />
         </service>
 
         <service id="cdev.docker_container_mailcatcher"
