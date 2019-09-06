@@ -12,6 +12,7 @@ class Php extends Container
     [
         'active' => true,
         'container_name' => 'project_php',
+        'relative_webroot_dir' => '',
         'ports' => [
             '80:80'
         ],
@@ -88,6 +89,18 @@ class Php extends Container
         $this->_config['ports'] = ['3' . $dockerport . ':80'];
 
         $this->_config['environment']['VIRTUAL_HOST'] = '.' . $dockername . '.docker';
+
+
+        $useCustomWebroot = false;
+
+        $this->askYesNoQuestion(
+            'Use custom webroot',
+            $useCustomWebroot
+        );
+
+        if ($useCustomWebroot) {
+            $this->_editCustomWebroot();
+        }
 
         $editEnvironmentVariables = false;
 
@@ -178,4 +191,16 @@ class Php extends Container
         // offer to add another
         $this->_addEnvironmentVariables();
     }
+
+    private function _editCustomWebroot()
+    {
+        $this->askQuestion(
+            'What is the webroot directory, relative to `src` directory (e.g. web)',
+            $this->_config['relative_webroot_dir'],
+            ''
+        );
+    }
+
+    
+
 }
