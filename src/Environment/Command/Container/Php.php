@@ -91,7 +91,10 @@ class Php extends Container
         $this->_config['environment']['VIRTUAL_HOST'] = '.' . $dockername . '.docker';
 
 
-        $useCustomWebroot = false;
+        $useCustomWebroot = isset($this->_config['relative_webroot_dir'])
+                        && strlen($this->_config['relative_webroot_dir']) > 0
+                        ? true
+                        : false;
 
         $this->askYesNoQuestion(
             'Use custom webroot',
@@ -100,6 +103,8 @@ class Php extends Container
 
         if ($useCustomWebroot) {
             $this->_editCustomWebroot();
+        } else {
+            $this->_config['relative_webroot_dir'] = '';
         }
 
         $editEnvironmentVariables = false;
