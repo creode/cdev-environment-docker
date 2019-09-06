@@ -1,6 +1,8 @@
 <?php
 namespace Cdev\Docker\Environment\Command\Container;
 
+use Symfony\Component\Filesystem\Filesystem;
+
 class Php extends Container
 {
     const COMMAND_NAME = 'container:php:configure';
